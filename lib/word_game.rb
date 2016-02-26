@@ -1,7 +1,7 @@
 require 'pry'
 
 class WordSearch
-  attr_reader :response
+  attr_reader :response, :word_fragment
 
   def initialize(path)
     @words = []
