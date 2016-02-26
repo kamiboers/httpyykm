@@ -14,16 +14,15 @@ class Server
     puts "Ready for a request"
     loop do
       @client = server.accept
-      begin_request_processing
-      close_client
+      begin_request_processing(server)
     end
   end
 
-  def begin_request_processing
+  def begin_request_processing(server)
     request = Request.new(transcribe_request)
     request.begin_processing
     display_request(request)
-    begin_response(request)
+    begin_response(request, server)
   end
 
   def transcribe_request
@@ -40,27 +39,24 @@ class Server
     @request_count += 1
   end
 
-  def begin_response(request)
+  def begin_response(request, server)
     puts "Sending response."
     response = Response.new(request, @request_count)
     response.create_response(request)
-
-    send_response_to_client(response)
+    send_response_to_client(response, server)
     display_response(response)
   end
 
-  def send_response_to_client(response)
+  def send_response_to_client(response, server)
     @client.puts response.headers
     @client.puts response.output
+    if response.break == true
+      server.close
+    end
   end
 
   def display_response(response)
     puts ["Wrote this response:", response.headers, response.output].join("\n")
-  end
-
-  def close_client
-    @client.close
-    puts "\nResponse complete, exiting."
   end
 
 end

@@ -8,6 +8,7 @@ class Request
   def begin_processing
     @request_hash = request_to_hash(@lines)
     interpret_request(request_hash)
+    convert_remaining_lines_to_printable_array(@remaining_lines)
   end
 
   def request_to_hash(request)
@@ -26,4 +27,11 @@ class Request
     @host = request_hash["Host"]
     @port = request_hash["Port"]
   end
+
+  def convert_remaining_lines_to_printable_array(lines_hash)
+    @remaining_lines = lines_hash.to_a.map do |line|
+      "#{line[0]}: #{line[1]}"
+    end
+  end
+
 end

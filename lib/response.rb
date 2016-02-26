@@ -2,18 +2,18 @@ require 'pry'
 require_relative 'word_game'
 
 class Response
-  attr_reader :response, :headers, :output
+  attr_reader :response, :headers, :output, :break
 
-  def initialize(request, count)
-    @count = count
+  def initialize(request, request_count)
+    @count = request_count
     @request = request
     @response = ""
+    @break = false
   end
 
   def create_response(request)
-    return_response_components
     add_response_path_components
-
+    return_response_components
   end
 
   def return_response_components
@@ -40,13 +40,15 @@ class Response
     end
 
     def no_path_response
-      @response += "<pre>
+      @response +=
+      "<pre>
       Verb: #{@request.verb}
       Path: #{@request.path}
       Protocol: #{@request.protocol}
       Host: #{@request.host}
       Port: #{@request.port}
-      \t#{@request.remaining_lines}</pre>"
+      \t#{@request.remaining_lines.join("\n\t")}
+      </pre>"
     end
 
     def hello_response
@@ -60,9 +62,9 @@ class Response
     end
 
     def shutdown_response
-      @client.puts "<pre>
+      @response += "<pre>
       Total Requests: #{@count}</pre>"
-      @client.close
+      @break = true
     end
 
     def word_game_response
