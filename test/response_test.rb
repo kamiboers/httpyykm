@@ -39,7 +39,6 @@ def test_it_returns_correct_path_response_for_word_search
   @request.begin_processing
   test_response = Response.new(@request, 0)
   test_response.create_response(@request)
-  binding.pry
   assert_equal true, test_response.response.include?("known word or word fragment")
 end
 
