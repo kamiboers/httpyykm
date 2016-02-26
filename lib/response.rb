@@ -4,16 +4,19 @@ require_relative 'word_game'
 class Response
   attr_reader :response, :headers, :output
 
-  def initialize(request, count, client)
+  def initialize(request, count)
     @count = count
     @request = request
     @response = ""
-    @client = client
-    response_components_created
-    return_components_of_response
   end
 
-  def return_components_of_response
+  def create_response(request)
+    return_response_components
+    add_response_path_components
+
+  end
+
+  def return_response_components
     @output = "<html><head></head><body>#{@response}</body></html>"
     @headers = ["http/1.1 200 ok",
       "date: #{Time.now.strftime('%a, %e %b %Y %H:%M:%S %z')}",
@@ -22,7 +25,7 @@ class Response
       "content-length: #{@output.length}\r\n\r\n"].join("\r\n")
     end
 
-    def response_components_created
+    def add_response_path_components
       if @request.path == "/"
         no_path_response
       elsif @request.path == "/hello"
