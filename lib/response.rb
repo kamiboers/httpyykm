@@ -35,7 +35,7 @@ class Response
       elsif @request.path == "/shutdown"
         shutdown_response
       elsif @request.path.include?("/word_search")
-        word_game_response
+        word_search_response
       end
     end
 
@@ -67,9 +67,10 @@ class Response
       @break = true
     end
 
-    def word_game_response
-      word_search = WordGame.new(@request.path)
-      @response += word_search.response
+    def word_search_response
+      search = WordSearch.new(@request.path)
+      search.run_word_search
+      @response += search.response
     end
 
   end
